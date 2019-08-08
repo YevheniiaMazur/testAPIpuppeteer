@@ -9,13 +9,10 @@ module.exports = class Helper {
             request.continue();
             return requestUrls.push(request.url());
         });
-
         await pageObj.goto(navUrl);
         await pageObj.waitFor(custTime);
 
-        await fs.writeFile('requestUrlsReport.json', JSON.stringify(requestUrls), (err) => {
-            if (err) throw err;
-        });
+        return requestUrls;
     };
 
     async getFailedRequests(navUrl, custTime, pageObj) {
@@ -26,13 +23,10 @@ module.exports = class Helper {
         pageObj.on('requestfailed', request => {
             return failedRequestUrls.push(request.url());
         });
-
         await pageObj.goto(navUrl);
         await pageObj.waitFor(custTime);
 
-        await fs.writeFile('failedRequestUrlsReport.json', JSON.stringify(failedRequestUrls), (err) => {
-            if (err) throw err;
-        });
+        return failedRequestUrls;
     };
 
     async getResponses(navUrl, custTime, pageObj) {
@@ -46,13 +40,10 @@ module.exports = class Helper {
             const status = response.status();
             return responseInfo.push(`response url: ${url}, status: ${status}`)
         });
-
         await pageObj.goto(navUrl);
         await pageObj.waitFor(custTime);
 
-        await fs.writeFile('responsesReport.json', JSON.stringify(responseInfo), (err) => {
-            if (err) throw err;
-        });
+        return responseInfo;
     };
 
     async getConsoleLogs(navUrl, custTime, pageObj) {
@@ -61,11 +52,25 @@ module.exports = class Helper {
         pageObj.on('console', msg => {
             return consoleLogs.push(msg.text());
         });
-
         await pageObj.goto(navUrl);
         await pageObj.waitFor(custTime);
-        await fs.writeFile('consoleLogsReport.json', JSON.stringify(consoleLogs), (err) => {
+        return consoleLogs;
+    };
+
+    async getPageErrors(navUrl, custTime, pageObj) {
+        let errorLogs = [];
+
+        pageObj.on('pageerror', err => {
+            return errorLogs.push(err);
+        });
+        await pageObj.goto(navUrl);
+        await pageObj.waitFor(custTime);
+        return errorLogs;
+    };
+
+    async generateReport(reportName, dataToWrite) {
+        await fs.writeFile(reportName, JSON.stringify(dataToWrite), (err) => {
             if (err) throw err;
         });
-    };
+    }
 };

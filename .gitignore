@@ -2,10 +2,7 @@
 /dist
 /tmp
 /out-tsc
-requestUrlsReport.json
-failedRequestUrlsReport.json
-responsesReport.json
-consoleLogsReport.json
+*Report.json
 
 # dependencies
 /node_modules

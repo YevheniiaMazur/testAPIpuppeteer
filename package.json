@@ -2,10 +2,11 @@
   "name": "puppeterTest",
   "version": "0.0.1",
   "scripts": {
-    "test:run": "URL=https://www.calcalistech.com/ctech/articles/0,7340,L-3746524,00.html TIMEOUT=30000 node index.js",
-    "test:custom:run": "URL=$NEW_URL TIMEOUT=NEW_TIMEOUT node index.js"
+    "test:run": "node index.js --url=https://www.calcalistech.com/ctech/articles/0,7340,L-3746524,00.html --t=300 --cycle=2",
+    "test:custom:run": "node index.js"
   },
   "dependencies": {
-    "puppeteer": "1.19.0"
+    "puppeteer": "1.19.0",
+    "yargs": "13.3.0"
   }
 }
