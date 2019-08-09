@@ -43,19 +43,19 @@ const helper =  require('./helper.js');
         responsesResultArr.push(responsesArr);
 
         //generating reports of each cycle
-        await helper.generateReport(`Cycle${ i + 1 }: ${ consoleReportName }`, logsArr);
-        await helper.generateReport(`Cycle${ i + 1 }: ${ errorsReportName }`, errorsArr);
-        await helper.generateReport(`Cycle${ i + 1 }: ${ requestsReportName }`, reqUrlsArr);
-        await helper.generateReport(`Cycle${ i + 1 }: ${ failedRequestsReportName }`, failedReqArr);
-        await helper.generateReport(`Cycle${ i + 1 }: ${ responsesReportName }`, responsesArr);
+        await helper.generateReport(`Cycle${ i + 1 }${ consoleReportName }`, logsArr);
+        await helper.generateReport(`Cycle${ i + 1 }${ errorsReportName }`, errorsArr);
+        await helper.generateReport(`Cycle${ i + 1 }${ requestsReportName }`, reqUrlsArr);
+        await helper.generateReport(`Cycle${ i + 1 }${ failedRequestsReportName }`, failedReqArr);
+        await helper.generateReport(`Cycle${ i + 1 }${ responsesReportName }`, responsesArr);
     }
     //finishing browser session
     await browser.close();
 
     //generating summary reports of all cycles
-    await helper.generateReport(`Summary: ${ consoleReportName }`, logsResultArr);
-    await helper.generateReport(`Summary: ${ errorsReportName }`, errorsResultArr);
-    await helper.generateReport(`Summary: ${ requestsReportName }`, reqUrlsResultArr);
-    await helper.generateReport(`Summary: ${ failedRequestsReportName }`, failedReqResultArr);
-    await helper.generateReport(`Summary: ${ responsesReportName }`, responsesResultArr);
+    await helper.generateReport(`Summary${ consoleReportName }`, logsResultArr);
+    await helper.generateReport(`Summary${ errorsReportName }`, errorsResultArr);
+    await helper.generateReport(`Summary${ requestsReportName }`, reqUrlsResultArr);
+    await helper.generateReport(`Summary${ failedRequestsReportName }`, failedReqResultArr);
+    await helper.generateReport(`Summary${ responsesReportName }`, responsesResultArr);
 })();
