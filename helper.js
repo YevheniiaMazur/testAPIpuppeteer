@@ -1,76 +1,55 @@
 const fs = require('fs');
 
-module.exports = class Helper {
-    async getRequestUrls(navUrl, custTime, pageObj) {
-        let requestUrls = [];
+async function grabDevToolData(navUrl, custTime, pageObj) {
+    const requestUrls = [];
+    const failedRequestUrls = [];
+    const responseInfo = [];
+    const consoleLogs = [];
+    const errorLogs = [];
 
-        await pageObj.setRequestInterception(true);
-        pageObj.on('request', request => {
-            request.continue();
-            return requestUrls.push(request.url());
-        });
-        await pageObj.goto(navUrl);
-        await pageObj.waitFor(custTime);
+    await pageObj.setRequestInterception(true);
 
-        return requestUrls;
-    };
+    pageObj.on('request', request => {
+        request.continue();
+        requestUrls.push(request.url());
+    });
 
-    async getFailedRequests(navUrl, custTime, pageObj) {
-        let failedRequestUrls = [];
+    pageObj.on('requestfailed', request => {
+        return failedRequestUrls.push(request.url());
+    });
 
-        await pageObj.setRequestInterception(true);
+    pageObj.on('response', response => {
+        const request = response.request();
+        const url = request.url();
+        const status = response.status();
+        responseInfo.push(`response url: ${ url }, status: ${ status }`)
+    });
 
-        pageObj.on('requestfailed', request => {
-            return failedRequestUrls.push(request.url());
-        });
-        await pageObj.goto(navUrl);
-        await pageObj.waitFor(custTime);
+    pageObj.on('console', msg => {
+        consoleLogs.push(msg.text());
+    });
 
-        return failedRequestUrls;
-    };
+    pageObj.on('pageerror', err => {
+        errorLogs.push(err);
+    });
 
-    async getResponses(navUrl, custTime, pageObj) {
-        let responseInfo = [];
+    await pageObj.goto(navUrl);
+    await pageObj.waitFor(custTime);
 
-        await pageObj.setRequestInterception(true);
+    pageObj.removeAllListeners('request');
+    pageObj.removeAllListeners('requestfailed');
+    pageObj.removeAllListeners('response');
+    pageObj.removeAllListeners('console');
+    pageObj.removeAllListeners('pageerror');
 
-        pageObj.on('response', response => {
-            const request = response.request();
-            const url = request.url();
-            const status = response.status();
-            return responseInfo.push(`response url: ${url}, status: ${status}`)
-        });
-        await pageObj.goto(navUrl);
-        await pageObj.waitFor(custTime);
-
-        return responseInfo;
-    };
-
-    async getConsoleLogs(navUrl, custTime, pageObj) {
-        let consoleLogs = [];
-
-        pageObj.on('console', msg => {
-            return consoleLogs.push(msg.text());
-        });
-        await pageObj.goto(navUrl);
-        await pageObj.waitFor(custTime);
-        return consoleLogs;
-    };
-
-    async getPageErrors(navUrl, custTime, pageObj) {
-        let errorLogs = [];
-
-        pageObj.on('pageerror', err => {
-            return errorLogs.push(err);
-        });
-        await pageObj.goto(navUrl);
-        await pageObj.waitFor(custTime);
-        return errorLogs;
-    };
-
-    async generateReport(reportName, dataToWrite) {
-        await fs.writeFile(reportName, JSON.stringify(dataToWrite), (err) => {
-            if (err) throw err;
-        });
-    }
+    return {conLog: consoleLogs, errs: errorLogs, reqUrl: requestUrls, failReqUrl: failedRequestUrls, resp: responseInfo};
 };
+
+async function generateReport(reportName, dataToWrite) {
+    await fs.writeFile(reportName, JSON.stringify(dataToWrite), (err) => {
+        if (err) throw err;
+    });
+};
+
+module.exports.generateReport = generateReport;
+module.exports.grabDevToolData = grabDevToolData;

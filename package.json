@@ -2,8 +2,7 @@
   "name": "puppeterTest",
   "version": "0.0.1",
   "scripts": {
-    "test:run": "node index.js --url=https://www.calcalistech.com/ctech/articles/0,7340,L-3746524,00.html --t=300 --cycle=2",
-    "test:custom:run": "node index.js"
+    "test:run": "node index.js"
   },
   "dependencies": {
     "puppeteer": "1.19.0",
