@@ -8,9 +8,10 @@
    ```number_of_repetitions``` - number of required repetitions
 
 #### Instructions:
-1. Install packages:
+1. In the terminal navigate to the project directory
+2. In the terminal execute following scripts to install the required packages:
 ```npm ci``` or ```npm install```
-2. Run script:
+3. For the test execution run script at the project directory:
 * ```npm run test:run``` for using pre-configured parameters or 
 * ```npm run test:run -- --url=new_url_value --t=new_timeout --cycle=number_of_repetitions``` for using with custom parameters, where:
  ```new_url_value``` - a value of the new url, on which the script will be executed;
